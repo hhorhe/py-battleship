@@ -6,31 +6,35 @@ class Deck:
 
 
 class Ship:
-    def __init__(self, start: tuple[int, int],
-                 end: tuple[int, int],
-                 is_drowned: bool = False) -> None:
+    def __init__(
+        self, start: tuple[int, int],
+            end: tuple[int, int],
+            is_drowned: bool = False
+    ) -> None:
         self.start = start
         self.end = end
         self.is_drowned = is_drowned
         self.decks = []
-        if start[0] == end[0]:  # horizontal ship
-            for col in range(start[1], end[1] + 1):
-                self.decks.append(Deck(start[0], col))
-        elif start[1] == end[1]:  # vertical ship
-            for row in range(start[0], end[0] + 1):
-                self.decks.append(Deck(row, start[1]))
+        self.create_decks()
+
+    def create_decks(self) -> None:
+        if self.start[0] == self.end[0]:  # horizontal ship
+            for col in range(self.start[1], self.end[1] + 1):
+                self.decks.append(Deck(self.start[0], col))
+        elif self.start[1] == self.end[1]:  # vertical ship
+            for row in range(self.start[0], self.end[0] + 1):
+                self.decks.append(Deck(row, self.start[1]))
 
     def get_deck(self, row: int, column: int) -> Deck:
         for deck in self.decks:
             if deck.row == row and deck.column == column:
                 return deck
-        return None
 
     def fire(self, row: int, column: int) -> str:
         deck = self.get_deck(row, column)
         if deck:
             deck.is_alive = False
-            if all(not d.is_alive for d in self.decks):
+            if all(not one_deck.is_alive for one_deck in self.decks):
                 self.is_drowned = True
                 return "Sunk!"
             return "Hit!"
